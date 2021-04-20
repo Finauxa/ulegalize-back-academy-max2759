@@ -1,0 +1,75 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.3.5.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+
+}
+
+apply plugin: 'io.spring.dependency-management'
+apply from: 'version.gradle'
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${cloudGcp}"
+    }
+}
+group = 'com.ulegalize'
+project.version = applicationVersion
+//version = applicationVersion
+description = applicationName
+sourceCompatibility = '1.11'
+
+repositories {
+    mavenLocal()
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2')
+        url = uri('https://repo1.maven.org/maven2/')
+    }
+}
+springBoot {
+    buildInfo()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
+    runtimeOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-tomcat'
+// https://mvnrepository.com/artifact/org.springframework.data/spring-data-releasetrain
+
+    implementation "io.jsonwebtoken:jjwt-api:${jsonwebtoken}"
+    testImplementation 'com.h2database:h2'
+
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:${jsonwebtoken}"
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:${jsonwebtoken}"
+    implementation "mysql:mysql-connector-java:${mysqlConnector}"
+
+    implementation "com.fasterxml.jackson.core:jackson-core:${jackson}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jackson}"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:${jackson}"
+
+    compileOnly "org.projectlombok:lombok:${lombok}"
+    annotationProcessor "org.projectlombok:lombok:${lombok}"
+    testCompileOnly "org.projectlombok:lombok:${lombok}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombok}"
+    testImplementation "de.flapdoodle.embed:de.flapdoodle.embed.mongo"
+    testImplementation('org.junit.jupiter:junit-jupiter-api:5.3.2')
+    testImplementation('org.junit.jupiter:junit-jupiter-engine:5.3.2')
+
+    implementation "org.apache.commons:commons-text:${commonsText}"
+    implementation "org.apache.commons:commons-lang3:${commonsLang}"
+
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    compile group: 'commons-io', name: 'commons-io', version: "${commonsIo}"
+
+
+}
+
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
