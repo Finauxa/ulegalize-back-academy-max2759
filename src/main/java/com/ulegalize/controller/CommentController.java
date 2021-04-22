@@ -20,12 +20,15 @@ public class CommentController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<CommentDTO> getComments(){
+        log.debug("getComments() from CommentController");
         return commentService.getAllComments();
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Comment addComment(@RequestBody Comment comment){
-        return commentService.createComment(comment);
+    public CommentDTO addComment(@RequestBody CommentDTO commentDTO){
+        log.debug("addComment() from CommentController", commentDTO);
+
+        return commentService.createComment(commentDTO);
     }
 
 
