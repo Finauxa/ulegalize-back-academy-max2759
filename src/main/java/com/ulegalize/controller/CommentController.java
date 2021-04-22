@@ -1,5 +1,6 @@
 package com.ulegalize.controller;
 
+import com.ulegalize.dto.CommentDTO;
 import com.ulegalize.model.Comment;
 import com.ulegalize.service.impl.CommentServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -10,15 +11,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("v1")
+@RequestMapping("v1/comments")
 @Slf4j
 public class CommentController {
 
     @Autowired
     private CommentServiceImpl commentService;
 
-    @GetMapping(value = "/comments", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Comment> getComments(){
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<CommentDTO> getComments(){
         return commentService.getAllComments();
     }
 
