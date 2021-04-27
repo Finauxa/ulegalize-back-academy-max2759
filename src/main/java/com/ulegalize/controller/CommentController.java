@@ -1,7 +1,6 @@
 package com.ulegalize.controller;
 
 import com.ulegalize.dto.CommentDTO;
-import com.ulegalize.model.Comment;
 import com.ulegalize.service.impl.CommentServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = { "http://localhost:3000"} )
 @RestController
 @RequestMapping("v1/comments")
 @Slf4j
