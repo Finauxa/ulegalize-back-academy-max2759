@@ -31,5 +31,12 @@ public class CommentController {
         return commentService.createComment(commentDTO);
     }
 
+    @DeleteMapping(value = "/{commentId}")
+    public void deleteComment(@PathVariable int commentId){
+        log.debug("deleteComment() from CommentController");
+
+        commentService.deleteComment(commentId);
+    }
+
 
 }

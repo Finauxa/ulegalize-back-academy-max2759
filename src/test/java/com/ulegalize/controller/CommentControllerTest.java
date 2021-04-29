@@ -41,6 +41,14 @@ class CommentControllerTest {
     @Test
     public void test_A_getAllComments() throws Exception{
 
+        CommentDTO comment = new CommentDTO();
+
+        comment.setId(1);
+        comment.setComment("test");
+        comment.setEmail("max@test.be");
+        comment.setGender("female");
+
+
         mockMvc.perform(get("/v1/comments"))
                 .andExpect(status().isOk());
     }
