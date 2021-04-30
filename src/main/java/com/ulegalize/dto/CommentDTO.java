@@ -12,4 +12,6 @@ public class CommentDTO implements Serializable {
     private String email;
     private String comment;
     private String gender;
+
+
 }
