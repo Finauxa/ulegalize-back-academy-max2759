@@ -26,12 +26,12 @@ public class Comment {
     @Setter
     private String gender;
 
-    @Column(name = "comment")
+    @Column(name = "comment", nullable = false)
     @Getter
     @Setter
     private String comment;
 
-    @Column(name = "date")
+    @Column(name = "date", nullable = false)
     @Getter
     @Setter
     private LocalDateTime date;

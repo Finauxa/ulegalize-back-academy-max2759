@@ -64,4 +64,36 @@ public class CommentServiceImpl implements ICommentService {
     }
 
 
+    public CommentDTO updateComment(CommentDTO commentDTO){
+
+        if (commentDTO == null) {
+            log.warn("comment is not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "comment is not found");
+        }
+
+        if (commentDTO.getId() == 0) {
+            log.warn("comment is not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "comment is not found");
+        }
+
+        log.debug("comment: {}, commentId: {}", commentDTO, commentDTO.getId());
+
+        Optional<Comment> commentById = commentRepository.findById(commentDTO.getId());
+
+        if (commentById.isEmpty()) {
+            log.warn("comment is not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "comment is not found");
+        }
+
+        Comment comment = commentDTOToCommentConverter.apply(commentDTO);
+
+        LocalDateTime lt = LocalDateTime.now();
+        comment.setDate(lt);
+
+        commentRepository.save(comment);
+
+        return commentDTO;
+
+    }
+
 }
