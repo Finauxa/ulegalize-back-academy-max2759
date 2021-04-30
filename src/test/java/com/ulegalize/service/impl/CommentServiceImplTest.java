@@ -5,14 +5,15 @@ import com.ulegalize.model.Comment;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -25,30 +26,54 @@ class CommentServiceImplTest {
     @Autowired
     private CommentServiceImpl commentService;
 
+   @Autowired
+   protected TestEntityManager testEntityManager;
+
    @Test
     public void test_A_getAllComments(){
-       Comment comment = new Comment();
+      CommentDTO commentDTO = new CommentDTO();
 
-       comment.setEmail("Test@test.be");
-       comment.setGender("Male");
-       comment.setComment("Test");
+      commentDTO.setComment("test");
+      commentDTO.setEmail("test@test.be");
+      commentDTO.setGender("Female");
 
-       List<CommentDTO> commentDTOList = commentService.getAllComments();
+      List<CommentDTO> commentDTOList = commentService.getAllComments();
 
-       assertNotNull(commentDTOList);
-       assertTrue(commentDTOList.size() > 0);
+      assertNotNull(commentDTOList);
+
    }
 
    @Test
     public void test_B_createComment(){
-       CommentDTO comment = new CommentDTO();
+       CommentDTO commentDTO = new CommentDTO();
 
-       comment.setEmail("Test@test.be");
-       comment.setGender("Male");
-       comment.setComment("Test");
+       commentDTO.setEmail("Test@test.be");
+       commentDTO.setGender("Male");
+       commentDTO.setComment("Test");
 
-       CommentDTO addComment = commentService.createComment(comment);
+       CommentDTO addComment = commentService.createComment(commentDTO);
+
        assertNotNull(addComment);
+       assertEquals(addComment.getComment(), "Test");
+   }
+
+   @Test
+   public void test_C_deleteCommentById(){
+
+      Comment comment = new Comment();
+
+      comment.setEmail("delete@test.be");
+      comment.setGender("Male");
+      comment.setComment("Test del");
+      comment.setDate(LocalDateTime.now());
+
+      testEntityManager.persist(comment);
+
+      commentService.deleteComment(comment.getId());
+
+      Comment commentDeleted = testEntityManager.find(Comment.class, comment.getId());
+
+      assertNull(commentDeleted);
    }
 
 

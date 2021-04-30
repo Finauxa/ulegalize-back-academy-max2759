@@ -2,6 +2,7 @@ package com.ulegalize.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ulegalize.dto.CommentDTO;
+import com.ulegalize.model.Comment;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +10,19 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEnti
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import java.time.LocalDateTime;
+
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -41,8 +47,19 @@ class CommentControllerTest {
     @Test
     public void test_A_getAllComments() throws Exception{
 
+        Comment comment = new Comment();
+
+        comment.setComment("test");
+        comment.setEmail("max@test.be");
+        comment.setGender("female");
+        comment.setDate(LocalDateTime.now());
+
+        testEntityManager.persist(comment);
+
         mockMvc.perform(get("/v1/comments"))
+                .andExpect(jsonPath("$[0].comment", is(comment.getComment())))
                 .andExpect(status().isOk());
+
     }
 
     @Test
@@ -59,4 +76,23 @@ class CommentControllerTest {
                 .andExpect(status().isOk());
 
     }
+
+    @Test
+    public void test_C_deleteComment() throws Exception {
+        Comment comment = new Comment();
+
+        comment.setComment("Test delete");
+        comment.setGender("Male");
+        comment.setDate(LocalDateTime.now());
+        comment.setEmail("testdel@delete.be");
+
+        testEntityManager.persist(comment);
+
+        mockMvc.perform(delete("/v1/comments/" + comment.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+
+
 }
