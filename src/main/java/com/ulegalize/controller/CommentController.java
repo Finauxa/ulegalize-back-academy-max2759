@@ -38,5 +38,12 @@ public class CommentController {
         commentService.deleteComment(commentId);
     }
 
+    @PutMapping
+    public CommentDTO updateCommentById(@RequestBody CommentDTO commentDTO){
+        log.debug("updateCommentById() from CommentController", commentDTO);
+
+        return commentService.updateComment(commentDTO);
+    }
+
 
 }
