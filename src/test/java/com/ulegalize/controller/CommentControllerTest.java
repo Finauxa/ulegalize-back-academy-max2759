@@ -1,6 +1,8 @@
 package com.ulegalize.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ulegalize.converter.CommentDTOToCommentConverter;
+import com.ulegalize.converter.CommentToCommentDTOConverter;
 import com.ulegalize.dto.CommentDTO;
 import com.ulegalize.model.Comment;
 import org.junit.jupiter.api.Test;
@@ -42,6 +44,18 @@ class CommentControllerTest {
 
     @Autowired
     protected TestEntityManager testEntityManager;
+
+    @Autowired
+    private CommentToCommentDTOConverter commentToCommentDTOConverter;
+
+    @Autowired
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
     @Test
@@ -93,6 +107,29 @@ class CommentControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void test_D_updateComment() throws Exception{
+        Comment comment = new Comment();
+
+        comment.setComment("Test delete");
+        comment.setGender("Male");
+        comment.setDate(LocalDateTime.now());
+        comment.setEmail("testdel@delete.be");
+
+        testEntityManager.persist(comment);
+
+        CommentDTO commentDTO = commentToCommentDTOConverter.apply(comment);
+
+        commentDTO.setComment(comment.getComment() + "update");
+
+        mockMvc.perform(put("/v1/comments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(commentDTO)))
+                .andExpect(jsonPath("$.comment", is(commentDTO.getComment())))
+                .andExpect(status().isOk());
+
+
+    }
 
 
 }
